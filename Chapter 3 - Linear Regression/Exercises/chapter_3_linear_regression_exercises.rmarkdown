@@ -1,0 +1,108 @@
+---
+title: "Chapter 3 - Linear Regression - Exercises"
+format: html
+editor: visual
+---
+
+
+### Set workspace
+
+
+```{r, warning=FALSE, message=FALSE}
+
+library(ISLR2)
+library(tidyverse)
+library(broom)
+library(gridExtra)
+
+theme_set(theme_minimal())
+```
+
+
+### Exercise 8)
+
+##### A)
+
+
+```{r, warning=FALSE, message=FALSE}
+
+Auto |> view()
+
+# First, some plotting
+
+Auto |> 
+  ggplot(aes(horsepower, mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+
+# Fit model
+
+auto_model <- lm(mpg ~ horsepower, data = Auto)
+
+summary(auto_model)
+
+# Predictions
+
+predict(auto_model,
+        tibble(horsepower = c(98)),
+        interval = "confidence")
+
+predict(auto_model,
+        tibble(horsepower = c(98)),
+        interval = "prediction")
+```
+
+
+i-iii. It is clear from our plot there is a relationship between miles per gallon and horsepower; as horsepower increases miles per gallon decreases. Our regression result say the same; for each increase in horsepower, there is a - 0.158 decrease in miles per gallon. The relationship is negative.
+
+iv\. The predicted miles per gallon usage based on our model with a horsepower of 98, is 24.5 (95 % CI: \[23.97, 24,96\]; PI: \[14.81, 34.12\]).
+
+##### B)
+
+
+```{r, warning=FALSE, message=FALSE}
+
+Auto |> 
+  ggplot(aes(horsepower, mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+##### C)
+
+
+```{r}
+
+
+augmented_auto_model <- augment(auto_model)
+
+# Resdiual plot
+
+res <- augmented_auto_model |> 
+  ggplot(aes(x = .fitted, y = .resid)) +
+    geom_point() +
+    geom_hline(yintercept = 0) +
+    labs(title = "Residual plot")
+
+# Q-Q plot
+
+qq <- augmented_auto_model |> 
+  ggplot(aes(sample = .resid)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(title = "Q-Q plot")
+
+# Cooks's Distance plot
+
+cooks <- augmented_auto_model |> 
+  ggplot(aes(x = .fitted, y = .cooksd)) +
+  geom_point() +
+  labs(title = "Cook's Distance plot")
+
+grid.arrange(res, qq, cooks, nrow = 1)
+```
+
+
+The main thing I'm concerned about from these diagnostic plots is the curvature shown in the residual plot. It may indicate that a polynomial regression is more suitable than a linear regression for these data.
+
