@@ -10,6 +10,7 @@ library(broom)
 library(gridExtra)
 library(GGally)
 library(ggcorrplot)
+library(janitor)
 
 theme_set(theme_minimal())
 
@@ -102,3 +103,31 @@ summary(multiple_auto_model)
 
 # ii. Displacement, weight, year and origin have a statistically significant 
 # relationship with miles per gallon.
+
+# iii. The coefficient of the year variable suggests that newer cars are
+# more fuel economical than older cars.
+
+### Exercise 10
+
+## A)
+
+Carseats |> view()
+
+# Clean the names to make the data easier to work with
+
+carseats <- Carseats |> clean_names()
+
+# Fit model
+
+multiple_carseats_model <- 
+  lm(sales ~ price + urban + us, data = carseats)
+
+summary(multiple_carseats_model)
+
+## B)
+
+# 
+
+
+
+
