@@ -11,6 +11,7 @@ library(gridExtra)
 library(GGally)
 library(ggcorrplot)
 library(janitor)
+library(MASS)
 
 theme_set(theme_minimal())
 
@@ -177,4 +178,48 @@ confint(new_multiple_carseats_model)
 
 ## H)
 
+# For checking leverage outliers, we will calculate the studentized residuals 
+# and check if is > 3 with a studres() from the MASS package.
+
+augmented_new_multiple_carseats_model <- augmented_new_multiple_carseats_model |> 
+  mutate(studentized_resid = studres(new_multiple_carseats_model))
+
+augmented_new_multiple_carseats_model |> 
+  ggplot(aes(x = .fitted, y = studentized_resid)) +
+  geom_point() +
+  geom_hline(yintercept = 3, color = "blue") +
+  geom_hline(yintercept = -3, color = "blue")
+
+# Even though some observations are close to an absolute value of 3, no 
+# observation is bigger. There are no outliers to worry about in our model.
+
+# We must also check for high leverage points. Since the augment() function
+# calculates .hat values for us, we can just plot them
+
+hat_lines <- augmented_new_multiple_carseats_model |> 
+  ggplot(aes(x = .fitted, y = .hat)) +
+  geom_col(width = 0.01)
+
+leverage_residuals <- augmented_new_multiple_carseats_model |> 
+  ggplot(aes(x = .hat, y = studentized_resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, color = "blue")
+
+grid.arrange(hat_lines, leverage_residuals, nrow = 1)
+
+# We see that our model has two observations that are bigger than the rest. 
+# We can do leverage calculations to check if they are considered too big
+
+leverage_function <- function(p, n, hat_value) { # Pretty ugly function and insufficient answer, will improve it
+  hat_value > (p + 1) / n
+}
+
+leverage_function(p = 2, n = 400, hat_value = 0.053)
+
+# The highest hat value in our set of observations exceeds the average leverage
+# value. This suggests that we should address the possibility of this observation
+# of being a high leverage point and consider removing it.
+
+
+ 
 
