@@ -222,4 +222,45 @@ if (hat_value > avg_leverage) {
 abs(hat_value - avg_leverage)
 
 # If I were to continue this analysis, I would consider to remove the point in
-# question.
+# question
+
+### Exercise 13)
+
+## A-C)
+
+x <- c(rnorm(100, 0, 1))
+
+eps <- c(rnorm(100, 0, 0.25))
+
+y <- - 1 + 0.5 * x + eps
+
+length(y)
+
+# The length of y is 100, the value of beta 0 is -1 and beta 1 is 0.5.
+
+## D)
+
+x_y <- tibble(x = x, y = y)
+
+x_y |>
+  ggplot(aes(x, y)) +
+  geom_point()
+
+# I observe a linear relationship.
+
+## E)
+
+x_y_linear_model <- lm(y ~ x, data = x_y)
+
+# The model is not quite similar to the model to the equation we called y.
+# The intercept is almost the same, but beta 1 is of by 0.325 units.
+
+## F)
+
+x_y |>
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_abline(intercept = -1, slope = 0.5) +
+  geom_abline(intercept = -1.0047, slope = 0.5325, color = "red")
+
+## G) 
