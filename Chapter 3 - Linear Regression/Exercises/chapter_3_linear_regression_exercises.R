@@ -196,30 +196,30 @@ augmented_new_multiple_carseats_model |>
 # We must also check for high leverage points. Since the augment() function
 # calculates .hat values for us, we can just plot them
 
-hat_lines <- augmented_new_multiple_carseats_model |> 
+augmented_new_multiple_carseats_model |> 
   ggplot(aes(x = .fitted, y = .hat)) +
-  geom_col(width = 0.01)
+  geom_col(width = 0.05)
 
-leverage_residuals <- augmented_new_multiple_carseats_model |> 
-  ggplot(aes(x = .hat, y = studentized_resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0, color = "blue")
+# We see that our model has one observations that is clearly bigger than the rest
+# We can compare its size to the average leverage for all observations.
+# ISLR 2 states that we should care about high leverage points if they greatly
+# exceed the average leverage, i.e., x > (p + 1) / n.
 
-grid.arrange(hat_lines, leverage_residuals, nrow = 1)
+hat_value <- max(augmented_new_multiple_carseats_model$hat_values) # Highest hat value
+predictors <- 2 # Number of predictors in our model
+num_observations <- 400 # Number of model observations
+avg_leverage <- (predictors + 1) / num_observations
 
-# We see that our model has two observations that are bigger than the rest. 
-# We can do leverage calculations to check if they are considered too big
-
-leverage_function <- function(p, n, hat_value) { # Pretty ugly function and insufficient answer, will improve it
-  hat_value > (p + 1) / n
+if (hat_value > avg_leverage) {
+  print("There might be a high leverage point to assess further")
+  
+} else {
+  print("There is no high leverage point to worry about")
 }
 
-leverage_function(p = 2, n = 400, hat_value = 0.053)
+# Difference between average leverage and our potential high point
 
-# The highest hat value in our set of observations exceeds the average leverage
-# value. This suggests that we should address the possibility of this observation
-# of being a high leverage point and consider removing it.
+abs(hat_value - avg_leverage)
 
-
- 
-
+# If I were to continue this analysis, I would consider to remove the point in
+# question.
