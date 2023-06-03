@@ -24,7 +24,7 @@ theme_set(theme_minimal())
 
 ### Exercise 8)
 
-##### A)
+(a).
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -58,7 +58,7 @@ i-iii. It is clear from our plot there is a relationship between miles per gallo
 
 iv\. The predicted miles per gallon usage based on our model with a horsepower of 98, is 24.5 (95 % CI: \[23.97, 24,96\]; PI: \[14.81, 34.12\]).
 
-##### B)
+(b).
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -68,7 +68,7 @@ Auto |>
   geom_smooth(method = "lm", se = FALSE)
 ```
 
-##### C)
+(c).
 
 ```{r}
 
@@ -108,7 +108,7 @@ The main thing I'm concerned about from these diagnostic plots is the curvature 
 
 #### Exercise 9
 
-##### A and B)
+(a)-(b).
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -117,7 +117,7 @@ Auto |>
   ggpairs()
 ```
 
-##### C)
+(c).
 
 ```{r}
 
