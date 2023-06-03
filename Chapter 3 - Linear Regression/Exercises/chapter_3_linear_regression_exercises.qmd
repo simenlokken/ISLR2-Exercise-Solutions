@@ -1,6 +1,9 @@
 ---
 title: "Chapter 3 - Linear Regression - Exercises"
-format: html
+format:
+  html:
+    warning: false
+    message: false
 editor: visual
 ---
 
@@ -12,6 +15,8 @@ library(ISLR2)
 library(tidyverse)
 library(broom)
 library(gridExtra)
+library(GGally)
+library(ggcorrplot)
 
 theme_set(theme_minimal())
 ```
@@ -66,6 +71,9 @@ Auto |>
 
 ```{r}
 
+# Source functions for model plots
+
+source("model_plots_linear_regression.R")
 
 augmented_auto_model <- augment(auto_model)
 
@@ -96,3 +104,69 @@ grid.arrange(res, qq, cooks, nrow = 1)
 ```
 
 The main thing I'm concerned about from these diagnostic plots is the curvature shown in the residual plot. It may indicate that a polynomial regression is more suitable than a linear regression for these data.
+
+#### Exercise 9
+
+##### A and B)
+
+```{r, warning=FALSE, message=FALSE}
+
+Auto |> 
+  select(- origin, - name) |>
+  ggpairs()
+```
+
+##### C)
+
+```{r}
+
+multiple_auto_model <- 
+  lm(mpg ~ . - name, data = Auto)
+
+summary(multiple_auto_model)
+```
+
+i\. Yes, but they impact the response differently. For example, while number of cylinders have a negative relationship with miles per gallon, origin have a positive relationship.
+
+ii\. Displacement, weight, year and origin have a statistically significant relationship with miles per gallon.
+
+#### Exercise 15)
+
+a\.
+
+```{r}
+
+summary(lm_boston_zn <- lm(crim ~ zn, data = Boston))
+summary(lm_boston_indus <- lm(crim ~ indus, data = Boston))
+summary(lm_boston_chas <- lm(crim ~ chas, data = Boston))
+summary(lm_boston_nox <- lm(crim ~ nox, data = Boston))
+summary(lm_boston_rm <- lm(crim ~ rm, data = Boston))
+summary(lm_boston_age <- lm(crim ~ age, data = Boston))
+summary(lm_boston_dis <- lm(crim ~ dis, data = Boston))
+summary(lm_boston_rad <- lm(crim ~ rad, data = Boston))
+summary(lm_boston_tax <- lm(crim ~ tax, data = Boston))
+summary(lm_boston_ptratio <- lm(crim ~ ptratio, data = Boston))
+summary(lm_boston_lstat <- lm(crim ~ lstat, data = Boston))
+summary(lm_boston_medv <- lm(crim ~ medv, data = Boston))
+```
+
+All predictors are statistically significant above the often used 0.05 level except for "chas", i.e., a dummy variable for stating whether the tract bounds river or not.
+
+b\.
+
+```{r}
+
+# Fit multiple linear regression model
+
+lm_boston_multiple <- lm(crim ~ ., data = Boston)
+
+summary(lm_boston_multiple)
+```
+
+The null hypothesis states that there is no statistically significant effect of a given predictor on the response variable "crim". The model show that we can reject the null hypothesis for "zn", "dis", "rad" and "medv" and conclude that these variables do have an affect.
+
+However, we should not blindly dismiss some variables for having an effect on the response based on the p-value alone. For instance, the predictor "nox" have a large effect magnitude on the response and it just slightly misses the alpha = 0.05 threshold.
+
+c\.
+
+The result from (a) differs from (b). In (a), all predictors were statistically significant except "chad". In (b), there was only four predictors that were statistically significant.
