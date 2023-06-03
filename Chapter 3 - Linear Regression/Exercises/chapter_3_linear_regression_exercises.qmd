@@ -330,10 +330,3 @@ However, we should not blindly dismiss some variables for having an effect on th
 (c).
 
 The result from (a) differs from (b). In (a), all predictors were statistically significant except "chad". In (b), there was only four predictors that were statistically significant.
-
-```{r}
-
-# Plotting univariate coefficients against multivariate coefficients
-
-tidy_lm_boston_multiple <- tidy(lm_boston_multiple)
-```
